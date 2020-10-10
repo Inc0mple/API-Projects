@@ -19,15 +19,19 @@ app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
-app.get("/timestamp", function (req, res) {
-  res.sendFile(__dirname + '/views/timestamp.html');
-});
+
 
 
 // your first API endpoint... 
 app.get("/api/hello", function (req, res) {
   console.log("hello world")
   res.json({greeting: 'hello API'});
+});
+
+//Start of Timestamp API
+
+app.get("/timestamp", function (req, res) {
+  res.sendFile(__dirname + '/views/timestamp.html');
 });
 
 app.get("/api/timestamp/:date_string?", function (req, res) {
@@ -56,6 +60,20 @@ app.get("/api/timestamp/:date_string?", function (req, res) {
    
 });
 
+//End of Timestamp API
+//Start of Request Header Parser API
+app.get("/requestheaderparser", function (req, res) {
+  res.sendFile(__dirname + '/views/requestheaderparser.html');
+});
+
+app.get("/api/whoami", function (req, res) {
+  //console.log(req.ip);
+  //console.log(req.headers["accept-language"]);
+  //console.log(req.headers["user-agent"])
+  return res.json({"ipaddress" : req.ip ,"language": req.headers["accept-language"],"software": req.headers["user-agent"]});
+});
+
+//End of Request Header Parser API
 
 
 // listen for requests :)
