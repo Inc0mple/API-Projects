@@ -7,12 +7,25 @@
       <link rel="shortcut icon" href="https://cdn.hyperdev.com/us-east-1%3A52a203ff-088b-420f-81be-45bf559d01b1%2Ffavicon.ico" type="image/x-icon"/>
       <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
       <link href="style.css" rel="stylesheet" type="text/css">
+      <script>
+        function appendURL() {
+          let output = window.location.hostname+":"+window.location.port+"/api"+window.location.pathname+"/"+document.getElementById('user-input').value;
+          document.getElementById("output-val").innerHTML = output;
+          document.getElementById("output-link").href = output;
+          //document.getElementById("submit-btn").href = output
+          //window.open(output);
+          //window.location.hostname+":"+window.location.port+"/api"+window.location.pathname.split("/").pop()+document.getElementById('user-input').value
+          //return window.open(window.location.href) //+ toString(document.getElementById('user-input').value))
+        }
+      </script>
    </head>
 
    <body>
 
       <div class="container">
         <h2>API Project: Timestamp Microservice Incomple_ edition V3</h2>
+        <input id="user-input" placeholder="Currently broken. Do not use." value=""> </input><button id="submit-btn" target="_blank" onclick=appendURL() href="">Submit</button>
+        <h3>Output: </h3><a id="output-link" href="" ><p id="output-val"></p></a>
         <h3>User Stories:</h3>
         <ol class="user-stories">
           
