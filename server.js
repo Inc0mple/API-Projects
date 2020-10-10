@@ -61,6 +61,7 @@ app.get("/api/timestamp/:date_string?", function (req, res) {
 });
 
 //End of Timestamp API
+
 //Start of Request Header Parser API
 app.get("/requestheaderparser", function (req, res) {
   res.sendFile(__dirname + '/views/requestheaderparser.html');
@@ -74,6 +75,13 @@ app.get("/api/whoami", function (req, res) {
 });
 
 //End of Request Header Parser API
+
+//Start of URL Shortener API
+app.get("/urlshortener", function (req, res) {
+  res.sendFile(__dirname + '/views/urlshortener.html');
+});
+
+//End of URL Shortener API
 
 
 // listen for requests :)
