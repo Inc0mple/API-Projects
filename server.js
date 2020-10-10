@@ -22,7 +22,26 @@ app.get("/", function (req, res) {
 
 // your first API endpoint... 
 app.get("/api/hello", function (req, res) {
+  console.log("hello world")
   res.json({greeting: 'hello API'});
+});
+
+app.get("/api/timestamp/:date_string?", function (req, res) {
+  console.log(":datestring = " + req.params.date_string)
+  console.log("upon parsing: " + Date.parse(req.params.date_string))
+  //console.log(req)
+  if (req.params.date_string == undefined) {
+    console.log("scenario 1")
+    return res.json({"unix" : Date.parse(new Date()), "utc":(new Date().toUTCString())});
+  }
+  else if (isNaN(Date.parse(req.params.date_string))) {
+    console.log("scenario 2")
+    return res.json({"error" : "Invalid Date" });
+  }
+  else {
+    console.log("scenario 3")
+    return res.json({"unix" : Date.parse(req.params.date_string), "utc":(new Date(req.params.date_string).toUTCString())});
+  } 
 });
 
 
