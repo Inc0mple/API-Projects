@@ -145,7 +145,7 @@ app.post("/api/shorturl/new", function (req, res) {
   })
   //console.log("shorturl post request called. req.body: ");
   //console.log(req.body); "inputURL" is the value of the "name" attribute from the input element in urlshortener.html
-  return res.json({"original_url" : userInput ,"short_url": newShortId});
+  return res.json({"original_url" : userInput ,"short_url": newShortId ,"__dirname": __dirname});
 });
 
 //End of URL Shortener API
