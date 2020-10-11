@@ -51,7 +51,7 @@ app.use(function (req, res, next) {
   next()
 })
 // The following 2 middleware is used if you want the form data to be available in req.body.
-// I first started using this for the urlshortener project, as I think it is specific to POST requests.
+// I first started using this for the shorturl project, as I think it is specific to POST requests.
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
  
@@ -124,8 +124,8 @@ const ShortUrl = mongoose.model('ShortUrl', new Schema({
   suffix: String
  }));
 
-app.get("/urlshortener", function (req, res) {
-  res.sendFile(__dirname + '/views/urlshortener.html');
+app.get("/shorturl", function (req, res) {
+  res.sendFile(__dirname + '/views/shorturl.html');
 });
 
 // from "https://www.geeksforgeeks.org/": The req.body property contains key-value 
@@ -153,7 +153,7 @@ app.post("/api/shorturl/new", function (req, res) {
         console.log("Saved " + data + " to MongoDB")
       });
       //console.log("shorturl post request called. req.body: ");
-      //console.log(req.body); "inputURL" is the value of the "name" attribute from the input element in urlshortener.html
+      //console.log(req.body); "inputURL" is the value of the "name" attribute from the input element in shorturl.html
       return res.json({"original_url" : userInput ,"short_url": newShortId});
     }
     else{

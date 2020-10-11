@@ -14,7 +14,7 @@
         }
         function appendURL() {
           let output = "http://"+window.location.hostname+":"+window.location.port+"/api"+window.location.pathname+"/"+document.getElementById('user-input').value;
-          document.getElementById("input-form").action = output;
+          document.getElementById("redirect-form").action = output;
           document.getElementById("output-val").innerHTML = output;
           document.getElementById("output-link").href = output;
         }
@@ -39,9 +39,9 @@
           example: <code>POST [project_url]/api/shorturl/new</code> - <code>https://www.google.com</code>
         </p>
         <form action="api/shorturl/new" method="POST">
-          <label for="url_input">URL to be shortened</label>
-          <input id="url_input" type="text" name="inputURL" value="https://www.freecodecamp.org">
-          <input type="submit" value="POST URL">
+          <label for="url-input">URL to be shortened</label>
+          <input id="url-input" type="text" name="inputURL" value="https://www.freecodecamp.org">
+          <input type="submit" value="Receive short URL">
         </form>
         <h3>Example Usage:</h3>
         <a href="https://inc0mple-projects.herokuapp.com/api/shorturl/k3qucxKpw">
@@ -50,6 +50,14 @@
 
         <h3>Will Redirect to:</h3>
         <p>https://freecodecamp.org/</p>
+
+        <h3>Try short URL here:</h3>
+        <form id="redirect-form" action="api/shorturl" method="GET" target="_blank">
+          <label for="user-input">https://inc0mple-projects.herokuapp.com/api/shorturl/</label>
+          <input id="user-input" type="text" name="userURL" value="k3qucxKpw">
+          <input type="submit" onclick=appendURL() value="Go to URL">
+          <a id="output-link" href="" target="_blank"><p id="output-val"></p></a>
+        </form>
       </div>
       <div class="footer">
         <p>
