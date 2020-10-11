@@ -5,8 +5,10 @@
 var express = require('express');
 var mongo = require('mongodb');
 var mongoose = require('mongoose');
-var bodyParser = require('body-parser');
-var shortid = require('shortid');
+var bodyParser = require('body-parser'); //for shorturl
+var shortid = require('shortid'); //for shorturl
+var multer  = require('multer'); //for file metadata
+
 
 const Schema  = mongoose.Schema;
 
@@ -51,7 +53,8 @@ app.use(function (req, res, next) {
   next()
 })
 // The following 2 middleware is used if you want the form data to be available in req.body.
-// I first started using this for the shorturl project, as I think it is specific to POST requests.
+// I first started using this for the shorturl project. I think it is specific to POST requests.
+
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
  
@@ -71,7 +74,7 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
-//Start of Timestamp API
+//**********Start of Timestamp API**********
 
 app.get("/timestamp", function (req, res) {
   res.sendFile(__dirname + '/views/timestamp.html');
@@ -103,9 +106,9 @@ app.get("/api/timestamp/:date_string?", function (req, res) {
    
 });
 
-//End of Timestamp API
+//**********End of Timestamp API**********
 
-//Start of Request Header Parser API
+//**********Start of Request Header Parser API**********
 app.get("/requestheaderparser", function (req, res) {
   res.sendFile(__dirname + '/views/requestheaderparser.html');
 });
@@ -114,9 +117,9 @@ app.get("/api/whoami", function (req, res) {
   return res.json({"ipaddress" : req.ip ,"language": req.headers["accept-language"],"software": req.headers["user-agent"]});
 });
 
-//End of Request Header Parser API
+//**********End of Request Header Parser API**********
 
-//Start of URL Shortener API
+//**********Start of URL Shortener API**********
 
 const ShortUrl = mongoose.model('ShortUrl', new Schema({ 
   original_url: String,
@@ -130,8 +133,8 @@ app.get("/shorturl", function (req, res) {
 
 // from "https://www.geeksforgeeks.org/": The req.body property contains key-value 
 // pairs of data submitted in the request body.
-// By default, it is undefined and is populated when you use a middleware 
-// called body-parsing such as express.urlencoded() or express.json().
+// By default, it is undefined and is populated when you use a body-parser middleware
+// such as app.use(bodyParser.urlencoded({ extended: false })) or app.use(bodyParser.json()).
 
 app.post("/api/shorturl/new", function (req, res) {
   let userInput = req.body.inputURL;
@@ -139,7 +142,7 @@ app.post("/api/shorturl/new", function (req, res) {
     //console.log("result = " + result)
     if (result == null) {
       let newShortId = shortid.generate();
-      //console.log(__dirname);
+      //console.log(__dirname); 
       console.log(newShortId);
       //console.log(window.location); "window" not recognised
       // "newUrl" is a document created from the model "ShortUrl", which is created from a schema written several lines above
@@ -176,9 +179,22 @@ app.get("/api/shorturl/:shortid", function(req, res) { //async required for awai
   });
 });
   
+//**********End of URL Shortener API**********
 
+//**********Start of File Metadata Microservice API**********
 
-//End of URL Shortener API
+var upload = multer({ dest: 'uploads/' });
+
+app.get("/fileanalyse", function (req, res) {
+  res.sendFile(__dirname + '/views/fileanalyse.html');
+});
+
+// variable in upload.single('') must have the same value as the 'name' attribute in the file input element in the html file
+app.post("/api/fileanalyse", upload.single('upfile'),function (req, res) {
+  return res.json({"name":req.file.originalname,"type":req.file.mimetype,"size":req.file.size})
+});
+
+//**********End of File Metadata Microservice API**********
 
 
 // listen for requests :)
