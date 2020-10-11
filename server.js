@@ -11,9 +11,9 @@ var shortid = require('shortid');
 const Schema  = mongoose.Schema;
 
 var app = express();
-var db_uri = "mongodb+srv://Incomple_:1nc0mpl3t3@trainingcluster.s2foa.mongodb.net/shorturlDB?retryWrites=true&w=majority"
+var db_uri = "mongodb+srv://Incomple_:Overspleen@trainingcluster.s2foa.mongodb.net/shorturlDB?retryWrites=true&w=majority"
 
-let port = process.env.PORT||3000;
+let port = process.env.PORT||3000; //Good convention, since "process.env.PORT" will run correctly on heroku
 
 /* Database */ 
 mongoose.connect(db_uri, {useNewUrlParser: true, useUnifiedTopology: true });
@@ -22,6 +22,7 @@ mongoose.connect(db_uri, {useNewUrlParser: true, useUnifiedTopology: true });
 // so that your API is remotely testable by FCC 
 var cors = require('cors');
 const { generate } = require('shortid');
+const { json } = require('body-parser');
 app.use(cors({optionsSuccessStatus: 200}));  // some legacy browsers choke on 204
 
 // http://expressjs.com/en/starter/static-files.html
@@ -134,19 +135,48 @@ app.get("/urlshortener", function (req, res) {
 
 app.post("/api/shorturl/new", function (req, res) {
   let userInput = req.body.inputURL;
-  let newShortId = shortid.generate();
-  console.log(__dirname);
-  //let shortenedUrl =  
-  console.log(newShortId)
-  let newUrl = new ShortUrl({
-    original_url: userInput,
-    short_url: String,
-    suffix: newShortId
-  })
-  //console.log("shorturl post request called. req.body: ");
-  //console.log(req.body); "inputURL" is the value of the "name" attribute from the input element in urlshortener.html
-  return res.json({"original_url" : userInput ,"short_url": newShortId ,"__dirname": __dirname});
+  ShortUrl.findOne({original_url: userInput}).then(function(result) {
+    //console.log("result = " + result)
+    if (result == null) {
+      let newShortId = shortid.generate();
+      //console.log(__dirname);
+      console.log(newShortId);
+      //console.log(window.location); "window" not recognised
+      // "newUrl" is a document created from the model "ShortUrl", which is created from a schema written several lines above
+      let newUrl = new ShortUrl({
+        original_url: userInput,
+        short_url: "/api/shorturl/"+newShortId,
+        suffix: newShortId
+      })
+      newUrl.save(function (err, data) {
+        if (err) return console.log(err);
+        console.log("Saved " + data + " to MongoDB")
+      });
+      //console.log("shorturl post request called. req.body: ");
+      //console.log(req.body); "inputURL" is the value of the "name" attribute from the input element in urlshortener.html
+      return res.json({"original_url" : userInput ,"short_url": newShortId});
+    }
+    else{
+      return res.json({"original_url" : result.original_url ,"short_url": result.suffix});
+    }
+  });
 });
+
+app.get("/api/shorturl/:shortid", function(req, res) { //async required for await to work
+  let idReq = req.params.shortid; 
+  //console.log("idReq = " + idReq)
+  ShortUrl.findOne({suffix: idReq}).then(function(result) {
+    //console.log("result = " + result)
+    if (result == null) {
+      return res.json({"error":"No short URL found for the given input"});
+    }
+    else{
+      res.redirect(result.original_url);
+    }
+  });
+});
+  
+
 
 //End of URL Shortener API
 
