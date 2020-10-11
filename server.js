@@ -190,7 +190,7 @@ app.get("/fileanalyse", function (req, res) {
 });
 
 // variable in upload.single('') must have the same value as the 'name' attribute in the file input element in the html file
-app.post("/fileanalyse/upload", upload.single('upfile'),function (req, res) {
+app.post("/fileanalyse/api/fileanalyse", upload.single('upfile'),function (req, res) {
   fs.unlink(__dirname + '/uploads/' + req.file.filename, function(err) { //deletes uploaded file to save space
     if (err) throw err;
     console.log('deleted ' + req.file.filename );
