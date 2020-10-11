@@ -7,13 +7,20 @@
       <link rel="shortcut icon" href="https://cdn.hyperdev.com/us-east-1%3A52a203ff-088b-420f-81be-45bf559d01b1%2Ffavicon.ico" type="image/x-icon"/>
       <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
       <link href="style.css" rel="stylesheet" type="text/css">
+
+      <script>
+        function goBack() {
+          document.getElementById("main-page-link").href = "http://"+window.location.hostname+":"+window.location.port;
+        }
+      </script>
    </head>
 
    <body>
       <div class="container">
+        <a id="main-page-link" href="" onclick=goBack() ><p>Back to Main Page</p></a>
         <h2>API Project: URL Shortener Microservice Incomple_ edition</h2>
         <h3>User Story: </h3>
-        <ol>
+        <ol class="user-stories">
           <li>I can POST a URL to <code>[project_url]/api/shorturl/new</code> and I will receive a shortened URL in the JSON response.<br>Example : <code>{"original_url":"www.google.com","short_url":1}</code></li>
           <li>If I pass an invalid URL that doesn't follow the <code>http(s)://www.example.com(/more/routes)</code> format, the JSON response will contain an error like <code>{"error":"invalid URL"}</code><br>
           HINT: to be sure that the submitted url points to a valid site you can use the function <code>dns.lookup(host, cb)</code> from the <code>dns</code> core module.</li>

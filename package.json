@@ -7,9 +7,11 @@
 		"start": "node server.js"
 	},
 	"dependencies": {
+		"cors": "^2.8.0",
 		"ejs": "^2.5.6",
 		"express": "^4.15.2",
-		"cors": "^2.8.0"
+		"mongodb": "^3.6.2",
+		"mongoose": "^5.10.9"
 	},
 	"devDependencies": {
 		"got": "^11.3.0",

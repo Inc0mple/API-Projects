@@ -9,17 +9,13 @@
       <link href="style.css" rel="stylesheet" type="text/css">
       <script>
         function goBack() {
-          document.getElementById("main-page-link").href = window.location.hostname+":"+window.location.port;
+          document.getElementById("main-page-link").href = "http://"+window.location.hostname+":"+window.location.port;
         }
         function appendURL() {
-          let output = window.location.hostname+":"+window.location.port+"/api"+window.location.pathname+"/"+document.getElementById('user-input').value;
+          let output = "http://"+window.location.hostname+":"+window.location.port+"/api"+window.location.pathname+"/"+document.getElementById('user-input').value;
           document.getElementById("input-form").action = output;
           document.getElementById("output-val").innerHTML = output;
           document.getElementById("output-link").href = output;
-          //document.getElementById("submit-btn").href = output
-          //window.open(output);
-          //window.location.hostname+":"+window.location.port+"/api"+window.location.pathname.split("/").pop()+document.getElementById('user-input').value
-          //return window.open(window.location.href) //+ toString(document.getElementById('user-input').value))
         }
       </script>
    </head>
@@ -27,10 +23,10 @@
    <body>
 
       <div class="container">
-        <a id="main-page-link" href="" onclick=goBack() target="_blank"><p>Back to Main Page</p></a>
+        <a id="main-page-link" href="" onclick=goBack() ><p>Back to Main Page</p></a>
         <h2>API Project: Timestamp Microservice Incomple_ edition V3</h2>
-        <form id="input-form" action="api/timestamp/" method="POST" target="_blank">
-        <input id="user-input" placeholder="Currently broken. Do not use." value=""><input type="submit" onclick=appendURL() value="GET TIMESTAMP">
+        <form id="input-form" action="api/timestamp/" method="GET" target="_blank">
+        <input id="user-input" placeholder="Input valid date string or Unix epoch" value=""><input type="submit" onclick=appendURL() value="Get Timestamp">
         </form>
         <h3>Output: </h3><a id="output-link" href="" ><p id="output-val"></p></a>
         <h3>User Stories:</h3>
