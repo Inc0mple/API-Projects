@@ -8,7 +8,7 @@ var mongoose = require('mongoose');
 var bodyParser = require('body-parser'); //for shorturl
 var shortid = require('shortid'); //for shorturl
 var multer  = require('multer'); //for file metadata
-
+var fs = require('fs'); //for file metadata 
 
 const Schema  = mongoose.Schema;
 
@@ -191,6 +191,10 @@ app.get("/fileanalyse", function (req, res) {
 
 // variable in upload.single('') must have the same value as the 'name' attribute in the file input element in the html file
 app.post("/api/fileanalyse", upload.single('upfile'),function (req, res) {
+  fs.unlink(__dirname + '/uploads/' + req.file.filename, function(err) { //deletes uploaded file to save space
+    if (err) throw err;
+    console.log('deleted ' + req.file.filename );
+  });
   return res.json({"name":req.file.originalname,"type":req.file.mimetype,"size":req.file.size})
 });
 
