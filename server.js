@@ -259,7 +259,13 @@ app.post("/exercise/api/exercise/add", (req, res) => {
   let inputId = req.body.userId;
   let inputDescription = req.body.description;
   let inputDuration = parseFloat(req.body.duration);
-  let inputDate = (req.body.date) == "" ? new Date() : new Date(req.body.date);
+  let inputDate;
+  if (req.body.date) {
+    inputDate = new Date(req.body.date);
+  }
+  else {
+    inputDate = new Date()
+  };
   console.log(inputDate)
   Profile.findOne({_id: inputId}).then((result) => {
     //console.log("result = " + result)
