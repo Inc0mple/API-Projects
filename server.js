@@ -348,7 +348,7 @@ app.get("/exercise/api/exercise/log", function (req, res) {
         console.log(reorderedLog);
         //console.log(resultLog);
         //result.log = reorderedLog;
-        let limit = (req.query.limit == "" ? reorderedLog.length : reorderedLog.limit);//If limit is empty, limit = length of log
+        let limit = (req.query.limit == "" ? reorderedLog.length : req.query.limit);//If limit is empty, limit = length of log
         reorderedLog.splice(0,reorderedLog.length - limit);//if limit empty, removes nothing, else remove everything - limit
         //console.log(`fromDate = ${fromDate}, req.query.from = ${req.query.from}`)
         responseJson.count = reorderedLog.length;
