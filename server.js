@@ -323,16 +323,21 @@ app.get("/exercise/api/exercise/log", function (req, res) {
           });
         }
         let newDateArray = resultLog.map((entry) => entry.date.toDateString());
-        console.log(resultLog);
+        //console.log(resultLog);
         for (i in resultLog) {
           resultLog[i].date = newDateArray[i];
-          console.log(resultLog[i].date);
+          //console.log(resultLog[i].date);
         }
         result.log = resultLog;
         let limit = (req.query.limit == "" ? result.log.length : req.query.limit);//If limit is empty, limit = length of log
         result.log.splice(0,result.log.length - limit);//if limit empty, removes nothing, else remove everything - limit
         //console.log(`fromDate = ${fromDate}, req.query.from = ${req.query.from}`)
-        return res.send(result);
+        return res.json({
+          "_id":result._id,
+          "username":result.user_name,
+          "count":result.log.length,
+          "log":result.log
+        });
       }
     }); //To do: Date stuff 
   }
