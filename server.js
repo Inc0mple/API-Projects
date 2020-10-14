@@ -216,7 +216,7 @@ const Profile = mongoose.model('Profile', new Schema({
     _id:false,
     desciption: String,
     duration: Number,
-    date: {type: Date, default: new Date().toDateString()}
+    date: {type: String, default: new Date().toDateString()}
   }]
 }));
 //date: {type: String, default: `${days[new Date().getDay()]} ${months[new Date().getMonth()]} ${days[new Date().getDate()]} ${days[new Date().getFullYear()]}`}
@@ -305,29 +305,39 @@ app.get("/exercise/api/exercise/log", function (req, res) {
         if (isNaN(fromDate) == false && isNaN(toDate) == false) {
           resultLog = result.log.filter((entry) => {
             //console.log(entry);
-            return entry.date >= fromDate && entry.date <= toDate;
+            return new Date(entry.date) >= fromDate && new Date(entry.date) <= toDate;
           });
         }
         else if (isNaN(fromDate) == false && isNaN(toDate) == true) {
           resultLog = result.log.filter((entry) => {
             //console.log(entry.date >= fromDate);
-            //console.log(entry);
-            return entry.date >= fromDate;
+            console.log(new Date(entry.date));
+            return new Date(entry.date) >= fromDate;
           });
         }
         else if (isNaN(fromDate) == true && isNaN(toDate) == false) {
           resultLog = result.log.filter((entry) => {
             //console.log(entry.date >= fromDate);
             //console.log(entry);
-            return entry.date <= toDate;
+            return new Date(entry.date) <= toDate;
           });
         }
+        /*
         let newDateArray = resultLog.map((entry) => entry.date.toDateString());
         //console.log(resultLog);
         for (i in resultLog) {
           resultLog[i].date = newDateArray[i];
           //console.log(resultLog[i].date);
         }
+        
+        for (i in resultLog) {
+          console.log(typeof resultLog);
+          //console.log(resultLog[i].date.toDateString());
+          let dateStr = resultLog[i].date.toDateString();
+          resultLog[i].date = 0;
+        }
+        */
+        //console.log(resultLog);
         result.log = resultLog;
         let limit = (req.query.limit == "" ? result.log.length : req.query.limit);//If limit is empty, limit = length of log
         result.log.splice(0,result.log.length - limit);//if limit empty, removes nothing, else remove everything - limit
