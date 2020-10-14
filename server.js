@@ -214,7 +214,7 @@ const Profile = mongoose.model('Profile', new Schema({
   user_name: String,
   log: [{ 
     _id:false,
-    desciption: String,
+    description: String,
     duration: Number,
     date: {type: String, default: new Date().toDateString()}
   }]
@@ -271,7 +271,7 @@ app.post("/exercise/api/exercise/add", (req, res) => {
     }
     else{
       let newLog = {
-        desciption: inputDescription,
+        description: inputDescription,
         duration: inputDuration,
         date: inputDate.toDateString()
         //date: `${days[inputDate.getDay()]} ${months[inputDate.getMonth()]} ${inputDate.getDate()} ${inputDate.getFullYear()}`
@@ -281,7 +281,7 @@ app.post("/exercise/api/exercise/add", (req, res) => {
         if (err) return console.log(err);
         console.log("Saved " + data + " to MongoDB")
       });
-      return res.json({"_id" : result._id ,"username": result.user_name,"date":newLog.date,"duration":newLog.duration,"description":newLog.desciption}); 
+      return res.json({"_id" : result._id ,"username": result.user_name,"date":newLog.date,"duration":newLog.duration,"description":newLog.description}); 
     }
   });
 });
