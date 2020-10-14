@@ -102,8 +102,7 @@ app.get("/api/timestamp/:date_string?", function (req, res) {
     console.log("Caught an error: " + err.message);
     return res.json({"error" : "Invalid Date" });
   }
-    
-   
+      
 });
 
 //**********End of Timestamp API**********
@@ -199,6 +198,151 @@ app.post("/fileanalyse/api/fileanalyse", upload.single('upfile'),function (req, 
 });
 
 //**********End of File Metadata Microservice API**********
+
+//**********Start of Exercise Tracker API**********
+/*
+const exerciseSchema = new Schema({ 
+  desciption: String,
+  duration: Number,
+  date: {type: Date, default: Date.now()}
+});
+*/
+var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+var days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fr", "Sat"];
+
+const Profile = mongoose.model('Profile', new Schema({ 
+  user_name: String,
+  log: [{ 
+    _id:false,
+    desciption: String,
+    duration: Number,
+    date: {type: Date, default: new Date().toDateString()}
+  }]
+}));
+//date: {type: String, default: `${days[new Date().getDay()]} ${months[new Date().getMonth()]} ${days[new Date().getDate()]} ${days[new Date().getFullYear()]}`}
+app.get("/exercise", function (req, res) {
+  res.sendFile(__dirname + '/views/exercise.html');
+});
+
+//.lean() returns POJOs (plain old javascript objects)
+app.get("/exercise/api/exercise/users", function (req, res) {
+  Profile.find().select("-log").lean().then((result) => {
+    return res.send(result);
+  });
+
+});
+
+
+app.post("/exercise/api/exercise/new-user", (req, res) => {
+  let userInput = req.body.username;
+  Profile.findOne({user_name: userInput}).then((result) => {
+    console.log("result = " + result)
+    if (result == null) {
+      let newUser = new Profile({
+        user_name: userInput,
+      })
+      newUser.save( (err, data) => {
+        if (err) return console.log(err);
+        console.log("Saved " + data + " to MongoDB")
+      });
+      //console.log("shorturl post request called. req.body: ");
+      //console.log(req.body); "inputURL" is the value of the "name" attribute from the input element in shorturl.html
+      return res.json({"username" : newUser.user_name ,"_id": newUser._id});
+    }
+    else{
+      return res.send("Username already taken");
+    }
+  });
+});
+
+app.post("/exercise/api/exercise/add", (req, res) => {
+  let inputId = req.body.userId;
+  let inputDescription = req.body.description;
+  let inputDuration = parseFloat(req.body.duration);
+  let inputDate = (req.body.date) == "" ? new Date() : new Date(req.body.date);
+  console.log(inputDate)
+  Profile.findOne({_id: inputId}).then((result) => {
+    //console.log("result = " + result)
+    if (result == null) {
+      return res.send("User not found");
+    }
+    else if (inputDescription == "" || isNaN(inputDuration) || isNaN(inputDate)) {
+      return res.send("Fields not completed properly");
+    }
+    else{
+      let newLog = {
+        desciption: inputDescription,
+        duration: inputDuration,
+        date: inputDate.toDateString()
+        //date: `${days[inputDate.getDay()]} ${months[inputDate.getMonth()]} ${inputDate.getDate()} ${inputDate.getFullYear()}`
+      }
+      result.log.push(newLog);
+      result.save( (err, data) => {
+        if (err) return console.log(err);
+        console.log("Saved " + data + " to MongoDB")
+      });
+      return res.json({"_id" : result._id ,"username": result.username,"date":newLog.date,"duration":newLog.duration,"description":newLog.desciption}); 
+    }
+  });
+});
+
+app.get("/exercise/api/exercise/log", function (req, res) {
+  let inputId = req.query.userId;
+  let fromDate = new Date (req.query.from);
+  let toDate = new Date (req.query.to);
+
+  if (mongoose.Types.ObjectId.isValid(inputId)) {
+    Profile.findById(inputId).then((result) => { //bugs out if inputId is not in an mongoose id object format, hence requiring a (mongoose.Types.ObjectId.isValid(inputId)) check first
+      //console.log("result = " + result)
+      //console.log(fromDate)
+      if (result == null) {
+        return res.send("User not found");
+      }
+      else {
+        //let filteredResult = result;
+        //console.log(result);
+        let resultLog = result.log
+        if (isNaN(fromDate) == false && isNaN(toDate) == false) {
+          resultLog = result.log.filter((entry) => {
+            //console.log(entry);
+            return entry.date >= fromDate && entry.date <= toDate;
+          });
+        }
+        else if (isNaN(fromDate) == false && isNaN(toDate) == true) {
+          resultLog = result.log.filter((entry) => {
+            //console.log(entry.date >= fromDate);
+            //console.log(entry);
+            return entry.date >= fromDate;
+          });
+        }
+        else if (isNaN(fromDate) == true && isNaN(toDate) == false) {
+          resultLog = result.log.filter((entry) => {
+            //console.log(entry.date >= fromDate);
+            //console.log(entry);
+            return entry.date <= toDate;
+          });
+        }
+        let newDateArray = resultLog.map((entry) => entry.date.toDateString());
+        console.log(resultLog);
+        for (i in resultLog) {
+          resultLog[i].date = newDateArray[i];
+          console.log(resultLog[i].date);
+        }
+        result.log = resultLog;
+        let limit = (req.query.limit == "" ? result.log.length : req.query.limit);//If limit is empty, limit = length of log
+        result.log.splice(0,result.log.length - limit);//if limit empty, removes nothing, else remove everything - limit
+        //console.log(`fromDate = ${fromDate}, req.query.from = ${req.query.from}`)
+        return res.send(result);
+      }
+    }); //To do: Date stuff 
+  }
+  else {
+    return res.send("Invalid userId");
+  }
+  
+});
+
+//**********End of Exercise Tracker API**********
 
 
 // listen for requests :)
