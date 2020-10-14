@@ -297,7 +297,7 @@ app.get("/exercise/api/exercise/log", function (req, res) {
       //console.log("result = " + result)
       //console.log(fromDate)
       if (result == null) {
-        return res.send("User not found");
+        return res.send("Unknown userId");
       }
       else {
         responseJson._id = result._id;
@@ -355,7 +355,7 @@ app.get("/exercise/api/exercise/log", function (req, res) {
     }); //To do: Date stuff 
   }
   else {
-    return res.send("Invalid userId");
+    return res.send("Unknown userId");
   }
   
 });
