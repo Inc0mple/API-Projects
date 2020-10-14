@@ -290,6 +290,7 @@ app.get("/exercise/api/exercise/log", function (req, res) {
   let inputId = req.query.userId;
   let fromDate = new Date (req.query.from);
   let toDate = new Date (req.query.to);
+  let responseJson = {};
 
   if (mongoose.Types.ObjectId.isValid(inputId)) {
     Profile.findById(inputId).then((result) => { //bugs out if inputId is not in an mongoose id object format, hence requiring a (mongoose.Types.ObjectId.isValid(inputId)) check first
@@ -299,23 +300,28 @@ app.get("/exercise/api/exercise/log", function (req, res) {
         return res.send("User not found");
       }
       else {
+        responseJson._id = result._id;
+        responseJson.username = result.user_name;
         //let filteredResult = result;
         //console.log(result);
         let resultLog = result.log
         if (isNaN(fromDate) == false && isNaN(toDate) == false) {
+          responseJson.from = fromDate.toDateString();
+          responseJson.to = toDate.toDateString();
           resultLog = result.log.filter((entry) => {
             //console.log(entry);
             return new Date(entry.date) >= fromDate && new Date(entry.date) <= toDate;
           });
         }
         else if (isNaN(fromDate) == false && isNaN(toDate) == true) {
+          responseJson.from = fromDate.toDateString();
           resultLog = result.log.filter((entry) => {
             //console.log(entry.date >= fromDate);
-            console.log(new Date(entry.date));
             return new Date(entry.date) >= fromDate;
           });
         }
         else if (isNaN(fromDate) == true && isNaN(toDate) == false) {
+          responseJson.to = toDate.toDateString();
           resultLog = result.log.filter((entry) => {
             //console.log(entry.date >= fromDate);
             //console.log(entry);
@@ -342,12 +348,9 @@ app.get("/exercise/api/exercise/log", function (req, res) {
         let limit = (req.query.limit == "" ? result.log.length : req.query.limit);//If limit is empty, limit = length of log
         result.log.splice(0,result.log.length - limit);//if limit empty, removes nothing, else remove everything - limit
         //console.log(`fromDate = ${fromDate}, req.query.from = ${req.query.from}`)
-        return res.json({
-          "_id":result._id,
-          "username":result.user_name,
-          "count":result.log.length,
-          "log":result.log
-        });
+        responseJson.count = result.log.length;
+        responseJson.log = result.log;
+        return res.send(responseJson);
       }
     }); //To do: Date stuff 
   }
