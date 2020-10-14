@@ -335,21 +335,24 @@ app.get("/exercise/api/exercise/log", function (req, res) {
           resultLog[i].date = newDateArray[i];
           //console.log(resultLog[i].date);
         }
-        
-        for (i in resultLog) {
-          console.log(typeof resultLog);
-          //console.log(resultLog[i].date.toDateString());
-          let dateStr = resultLog[i].date.toDateString();
-          resultLog[i].date = 0;
-        }
         */
+       console.log(result.log);
+       let reorderedLog = [];
+        for (i in resultLog) {
+          let newEntry = {};
+          newEntry.description = resultLog[i].description;
+          newEntry.duration = resultLog[i].duration;
+          newEntry.date = resultLog[i].date;
+          reorderedLog.push(newEntry);
+        }
+        console.log(reorderedLog);
         //console.log(resultLog);
-        result.log = resultLog;
-        let limit = (req.query.limit == "" ? result.log.length : req.query.limit);//If limit is empty, limit = length of log
-        result.log.splice(0,result.log.length - limit);//if limit empty, removes nothing, else remove everything - limit
+        //result.log = reorderedLog;
+        let limit = (req.query.limit == "" ? reorderedLog.length : reorderedLog.limit);//If limit is empty, limit = length of log
+        reorderedLog.splice(0,reorderedLog.length - limit);//if limit empty, removes nothing, else remove everything - limit
         //console.log(`fromDate = ${fromDate}, req.query.from = ${req.query.from}`)
-        responseJson.count = result.log.length;
-        responseJson.log = result.log;
+        responseJson.count = reorderedLog.length;
+        responseJson.log = reorderedLog;
         return res.send(responseJson);
       }
     }); //To do: Date stuff 
