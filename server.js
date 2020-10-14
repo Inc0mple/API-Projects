@@ -281,7 +281,7 @@ app.post("/exercise/api/exercise/add", (req, res) => {
         if (err) return console.log(err);
         console.log("Saved " + data + " to MongoDB")
       });
-      return res.json({"_id" : result._id ,"username": result.username,"date":newLog.date,"duration":newLog.duration,"description":newLog.desciption}); 
+      return res.json({"_id" : result._id ,"username": result.user_name,"date":newLog.date,"duration":newLog.duration,"description":newLog.desciption}); 
     }
   });
 });
