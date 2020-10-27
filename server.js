@@ -16,6 +16,8 @@ const requestheaderparser = require("./api/requestheaderparser");
 const shorturl = require("./api/shorturl");
 const fileanalyse = require("./api/fileanalyse");
 const exercise = require("./api/exercise");
+const sudoku = require("./api/sudoku");
+const library = require("./api/library");
 
 const Schema = mongoose.Schema;
 
@@ -48,11 +50,11 @@ app.use(function (req, res, next) {
     "-" +
     current_datetime.getDate() +
     " " +
-    current_datetime.getHours() +
+    (current_datetime.getHours() > 10 ? current_datetime.getHours() : "0" + current_datetime.getHours()) +
     ":" +
-    current_datetime.getMinutes() +
+    (current_datetime.getMinutes() > 10 ? current_datetime.getMinutes() : "0" + current_datetime.getMinutes()) +
     ":" +
-    current_datetime.getSeconds();
+    (current_datetime.getSeconds() > 10 ? current_datetime.getSeconds() : "0" + current_datetime.getSeconds());
   let method = req.method;
   let url = req.url;
   let status = res.statusCode;
@@ -71,9 +73,13 @@ app.use(bodyParser.json());
 
 // http://expressjs.com/en/starter/basic-routing.html
 app.get("/", function (req, res) {
-  res.sendFile(__dirname + "/views/index.html");
+  res.sendFile(__dirname + "/views/portfolio.html");
 });
 
+
+app.get("/index", function (req, res) {
+  res.sendFile(__dirname + "/views/index.html");
+});
 //**********Start of Timestamp API**********
 
 app.get("/timestamp", timestamp);
@@ -106,8 +112,22 @@ app.post("/exercise/api/exercise/new-user", exercise);
 app.post("/exercise/api/exercise/add", exercise);
 app.get("/exercise/api/exercise/log", exercise);
 
+//**********Start of Sudoku**********
+
+app.get("/sudoku",sudoku);
+
+//**********Start of Library**********
+
+app.get("/library",library);
+app.get("/api/books", library);
+app.get("/api/books/:id", library);
+app.post("/api/books", library);
+app.post("/api/books/:id", library);
+app.delete("/api/books", library);
+app.delete("/api/books/:id", library);
+
 
 // listen for requests :)
-var listener = app.listen(port, function () {
+let listener = app.listen(port, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });

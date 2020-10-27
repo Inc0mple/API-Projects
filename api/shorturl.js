@@ -29,12 +29,9 @@ const ShortUrl = mongoose.model('ShortUrl', new Schema({
   router.post("/api/shorturl/new", function (req, res) {
     let userInput = req.body.inputURL;
     ShortUrl.findOne({original_url: userInput}).then(function(result) {
-      //console.log("result = " + result)
       if (result == null) {
         let newShortId = shortid.generate();
-        //console.log(__dirname); 
         console.log(newShortId);
-        //console.log(window.location); "window" not recognised
         // "newUrl" is a document created from the model "ShortUrl", which is created from a schema written several lines above
         let newUrl = new ShortUrl({
           original_url: userInput,

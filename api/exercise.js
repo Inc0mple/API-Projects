@@ -1,5 +1,5 @@
 const express = require("express");
-const router = express.Router();
+const router = express.Router(); 
 const mongo = require('mongodb');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser'); //for shorturl
